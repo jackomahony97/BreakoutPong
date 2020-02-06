@@ -1,6 +1,5 @@
 package com.cs3305.breakoutpong;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -43,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
             super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         }
 
-        @NonNull
         @Override
         public Fragment getItem(int i) {
             return fragmentList.get(i);
