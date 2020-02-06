@@ -15,7 +15,7 @@ import android.widget.Button;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class LoginFragment extends Fragment implements View.OnClickListener {
+public class LoginFragment extends Fragment {
 
     Button btn;
 
@@ -47,8 +47,5 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         super.onResume();  // Always call the superclass method first
     }
 
-    @Override
-    public void onClick(View v) {
 
-    }
 }
