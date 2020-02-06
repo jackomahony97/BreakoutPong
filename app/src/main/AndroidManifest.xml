@@ -11,8 +11,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".SelectModeActivity" android:theme="@style/AppTheme.NoActionBar"></activity> //removes bar at top of screen
-        <activity android:name=".BluetoothActivity" android:theme="@style/AppTheme.NoActionBar"></activity> //removes bar at top of screen
+        <activity android:name=".TwoPlayerGameActivity" android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".SingleGameActivity" android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".SelectModeActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".BluetoothActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
