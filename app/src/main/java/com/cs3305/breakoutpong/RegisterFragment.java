@@ -28,4 +28,14 @@ public class RegisterFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_register, container, false);
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();  // Always call the superclass method first
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();  // Always call the superclass method first
+    }
+
 }

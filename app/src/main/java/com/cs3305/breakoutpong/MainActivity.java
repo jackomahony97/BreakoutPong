@@ -1,5 +1,6 @@
 package com.cs3305.breakoutpong;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -20,18 +21,29 @@ public class MainActivity extends AppCompatActivity {
         ViewPager viewPager = findViewById(R.id.viewPager);
 
         AuthenticationPagerAdapter pagerAdapter = new AuthenticationPagerAdapter(getSupportFragmentManager());
-        pagerAdapter.addFragmet(new LoginFragment());
-        pagerAdapter.addFragmet(new RegisterFragment());
+        pagerAdapter.addFragment(new LoginFragment());
+        pagerAdapter.addFragment(new RegisterFragment());
         viewPager.setAdapter(pagerAdapter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();  // Always call the superclass method first
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();  // Always call the superclass method first
     }
 
     class AuthenticationPagerAdapter extends FragmentPagerAdapter {
         private ArrayList<Fragment> fragmentList = new ArrayList<>();
 
         public AuthenticationPagerAdapter(FragmentManager fm) {
-            super(fm);
+            super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         }
 
+        @NonNull
         @Override
         public Fragment getItem(int i) {
             return fragmentList.get(i);
@@ -42,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
             return fragmentList.size();
         }
 
-        void addFragmet(Fragment fragment) {
+        void addFragment(Fragment fragment) {
             fragmentList.add(fragment);
         }
     }
