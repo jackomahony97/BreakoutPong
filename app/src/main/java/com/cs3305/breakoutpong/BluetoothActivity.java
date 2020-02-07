@@ -75,5 +75,8 @@ public class BluetoothActivity extends AppCompatActivity {
         });
     }
 
-    
+
 }
+
+
+
