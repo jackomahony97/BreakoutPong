@@ -3,13 +3,12 @@ package com.cs3305.breakoutpong;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import androidx.fragment.app.Fragment;
 
 
 /**
@@ -17,7 +16,11 @@ import android.widget.Button;
  */
 public class RegisterFragment extends Fragment {
 
-    Button btn;
+    /**
+     * Button : represents the register button
+     */
+    private Button btn;
+    private DatabaseHelper dbHelper = new DatabaseHelper(getContext());
 
 
     public RegisterFragment() {
@@ -30,11 +33,21 @@ public class RegisterFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_register, container,         false);
 
-        btn = (Button) rootView.findViewById(R.id.btn_register );
+        btn = rootView.findViewById(R.id.btn_register );
         btn.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
+                //----------------------------------------------------------------------------------
+                // TODO check database to see if credentials are already registered
+                //----------------------------------------------------------------------------------
+
+
+                //----------------------------------------------------------------------------------
+                // If user is not already registered
+                //----------------------------------------------------------------------------------
+
+
                 Intent intent = new Intent(getActivity(), BluetoothActivity.class);
                 startActivity(intent);
             }

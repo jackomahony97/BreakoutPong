@@ -1,7 +1,5 @@
 package com.cs3305.breakoutpong;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
@@ -10,6 +8,8 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Set;
 
@@ -28,6 +28,7 @@ public class BluetoothActivity extends AppCompatActivity {
     //
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter == null) {
+            // TODO add a proper exit status here
             // Device doesn't support Bluetooth
         }
 
