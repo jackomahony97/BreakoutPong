@@ -9,6 +9,14 @@ import android.graphics.BitmapFactory;
  */
 public class Ball {
     /**
+     * Ball direction
+     */
+    private boolean left;
+    /**
+     * Ball direction
+     */
+    private boolean up;
+    /**
      * Resized bitmap derived from original bitmap
      */
     private Bitmap bitmap;
@@ -20,59 +28,91 @@ public class Ball {
      * y coordinate
      */
     private int y;
-
-
     /**
      * Speed of the ball
      * TODO increase speed per level
      */
-    private int speed = 0;
+    private int speed;
+    /**
+     * Screen width
+     */
+    private int width;
+    /**
+     * Screen height
+     */
+    private int height;
 
-    int width;
-    int height;
-
-    //constructor
+    /**
+     * Constructor to set height, width and speed
+     * @param context activity context
+     */
     public Ball(Context context) {
-        //Bitmap to get character from image
-        Bitmap originalBitmap;
+        left = false;
+        // Get initial direction
+        up = true;
+        // Get device width
         width= context.getResources().getDisplayMetrics().widthPixels;
+        // Get device height
         height= context.getResources().getDisplayMetrics().heightPixels;
-
+        // Set device width - size of ball
         x = width/2 - 25;
+        // Set device width - size of ball
         y = height/2 - 25;
-        speed = 1;
-
+        // Set initial speed
+        // TODO is this the correct starter speed?
+        setSpeed(10);
 
         //Getting bitmap from drawable resource
-        originalBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.bally);
-        bitmap =
-                Bitmap.createScaledBitmap(originalBitmap, 50, 50, false);
+        Bitmap originalBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.bally);
+        // Scale tp correct size
+        bitmap = Bitmap.createScaledBitmap(originalBitmap, 50, 50, false);
     }
 
-    //Method to update coordinate of character
+    /**
+     * Method to update coordinate of character
+     */
     public void update() {
-        //updating paddle position
+        if (getX() < 1 || getX() > width - 50){
+            left = !left;
+        }
 
-        if (getY() > 1) {
+        if (!up) {
+            updateDown();
+            if (getY() > height - 175){
+                up = !up;
+            }
+        }
+        else {
             updateUp();
+            if (getY() < 1){
+                up = !up;
+            }
         }
     }
 
+    /**
+     * Method
+     */
     public void updateUp() {
         //updating paddle position
-        y = y - 5;
+        y = y - getSpeed();
+        if(!left){
+            x = x + getSpeed();
+        }else{
+            x = x - getSpeed();
+        }
     }
 
     public void updateDown() {
         //updating paddle position
-        y = y + 5;
+        y = y + getSpeed();
+        if(!left){
+            x = x + getSpeed();
+        }else{
+            x = x - getSpeed();
+        }
     }
 
-
-    /*
-     * These are getters you can generate it autmaticallyl
-     * right click on editor -> generate -> getters
-     * */
     public Bitmap getBitmap() {
         return bitmap;
     }
@@ -87,5 +127,13 @@ public class Ball {
 
     public int getSpeed() {
         return speed;
+    }
+
+    public void setSpeed(int newSpeed){
+        this.speed = newSpeed;
+    }
+
+    public void changeUp(){
+        this.up = !up;
     }
 }

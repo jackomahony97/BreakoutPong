@@ -23,6 +23,9 @@ public class GameView extends SurfaceView implements Runnable {
     //adding the ball to this class
     private Ball ball;
 
+    //adding the bricks to this class
+    private Brick bricks[] = new Brick[30];
+
     //These objects will be used for drawing
     private Paint paint;
     private Canvas canvas;
@@ -35,11 +38,31 @@ public class GameView extends SurfaceView implements Runnable {
 
     private String s = "2";
 
+    /**
+     * Screen width
+     */
+    private int width;
+    /**
+     * Screen height
+     */
+    private int height;
+
 
     //Class constructor
     public GameView(Context context) {
         super(context);
 
+        int k = 0;
+        while (k < bricks.length){
+            bricks[k] = new Brick(context, 1);
+            k++;
+        }
+
+
+        // Get device width
+        width= context.getResources().getDisplayMetrics().widthPixels;
+        // Get device height
+        height= context.getResources().getDisplayMetrics().heightPixels;
 
         //initializing paddle object
         paddle = new Paddle(context);
@@ -81,7 +104,38 @@ public class GameView extends SurfaceView implements Runnable {
     private void update() {
         paddle.update(s);
         s="2";
-        ball.update();
+        /**
+         *  paddle.getX(), paddle.getY() - paddle.height        paddle.get(X) + paddle.length, paddle.getY() - paddle.height
+         *          --------------------------------------------
+         *          |                                           |
+         *          |                                           |
+         *          --------------------------------------------
+         *  paddle.getX(), paddle.getY()                         paddle.get(X) + paddle.length, paddle.getY()
+         *
+         */
+
+        for (Brick brick : bricks) {
+            if (ball.getY() < brick.getY() + 100 && brick.getAlive()) {
+                if (ball.getX() >= brick.getX() && ball.getX() <= (brick.getX() + width/6)) {
+                    brick.update();
+                    ball.changeUp();
+                    break;
+                }
+            }
+        }
+
+
+        if (ball.getY() > paddle.getY()-25) {
+
+            if (ball.getX() >= paddle.getX() && ball.getX() <= (paddle.getX() + 200)) {
+                ball.update();
+            } else {
+                playing = false;
+            }
+        }else {
+            ball.update();
+        }
+
 
     }
 
@@ -106,6 +160,22 @@ public class GameView extends SurfaceView implements Runnable {
                     ball.getY(),
                     paint);
 
+            //Drawing the bricks
+            int counter = 0;
+            for(int column = 0; column < 250; column=column + 50) {
+                for (int row = 0; row < width; row = row + width/6) {
+                    bricks[counter].setX(row);
+                    bricks[counter].setY(column);
+                    if(bricks[counter].getAlive()) {
+                        canvas.drawBitmap(
+                                bricks[counter].getBitmap(),
+                                bricks[counter].getX(),
+                                bricks[counter].getY(),
+                                paint);
+                    }
+                    counter++;
+                }
+            }
             //Unlocking the canvas
             surfaceHolder.unlockCanvasAndPost(canvas);
         }
