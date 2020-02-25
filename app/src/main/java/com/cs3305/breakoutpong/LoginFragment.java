@@ -16,15 +16,13 @@ import androidx.fragment.app.Fragment;
  */
 public class LoginFragment extends Fragment {
 
-    Button btn;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_login, container,         false);
 
-        btn = (Button) rootView.findViewById(R.id.btn_login);
+        Button btn = rootView.findViewById(R.id.btn_login);
         btn.setOnClickListener(new View.OnClickListener() {
 
             @Override

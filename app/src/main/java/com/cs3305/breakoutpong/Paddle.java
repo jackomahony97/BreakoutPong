@@ -18,7 +18,7 @@ public class Paddle {
      */
     private int y;
     /**
-     * Speed of the paddle
+     * Speed of the brick
      * TODO increase speed per level
      */
     private int speed;
@@ -40,19 +40,19 @@ public class Paddle {
         width= context.getResources().getDisplayMetrics().widthPixels;
         // Get device height
         height= context.getResources().getDisplayMetrics().heightPixels;
-        // Set device width - size of paddle
+        // Set device width - size of brick
         x = width/2 - 100;
-        // Set device width - size of paddle
+        // Set device width - size of brick
         y = height - 150;
         setSpeed(20);
 
         //Getting bitmap from drawable resource
-        Bitmap originalBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.icon);
+        Bitmap originalBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.paddle);
         bitmap = Bitmap.createScaledBitmap(originalBitmap, 200, 100, false);
     }
 
     /**
-     * Method to updating paddle position
+     * Method to updating brick position
      * @param s String that represents the data sent from the Arduino
      */
     public void update(String s){

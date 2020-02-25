@@ -17,7 +17,7 @@ public class GameView extends SurfaceView implements Runnable {
     //the game thread
     private Thread gameThread = null;
 
-    //adding the paddle to this class
+    //adding the brick to this class
     private Paddle paddle;
 
     //adding the ball to this class
@@ -64,7 +64,7 @@ public class GameView extends SurfaceView implements Runnable {
         // Get device height
         height= context.getResources().getDisplayMetrics().heightPixels;
 
-        //initializing paddle object
+        //initializing brick object
         paddle = new Paddle(context);
 
         //initializing ball object
@@ -105,12 +105,12 @@ public class GameView extends SurfaceView implements Runnable {
         paddle.update(s);
         s="2";
         /**
-         *  paddle.getX(), paddle.getY() - paddle.height        paddle.get(X) + paddle.length, paddle.getY() - paddle.height
+         *  brick.getX(), brick.getY() - brick.height        brick.get(X) + brick.length, brick.getY() - brick.height
          *          --------------------------------------------
          *          |                                           |
          *          |                                           |
          *          --------------------------------------------
-         *  paddle.getX(), paddle.getY()                         paddle.get(X) + paddle.length, paddle.getY()
+         *  brick.getX(), brick.getY()                         brick.get(X) + brick.length, brick.getY()
          *
          */
 
@@ -146,7 +146,7 @@ public class GameView extends SurfaceView implements Runnable {
             canvas = surfaceHolder.lockCanvas();
             //drawing a background color for canvas
             canvas.drawColor(Color.WHITE);
-            //Drawing the paddle
+            //Drawing the brick
             canvas.drawBitmap(
                     paddle.getBitmap(),
                     paddle.getX(),

@@ -63,7 +63,7 @@ public class Ball {
         setSpeed(10);
 
         //Getting bitmap from drawable resource
-        Bitmap originalBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.bally);
+        Bitmap originalBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ball);
         // Scale tp correct size
         bitmap = Bitmap.createScaledBitmap(originalBitmap, 50, 50, false);
     }
@@ -94,7 +94,7 @@ public class Ball {
      * Method
      */
     public void updateUp() {
-        //updating paddle position
+        //updating brick position
         y = y - getSpeed();
         if(!left){
             x = x + getSpeed();
@@ -104,7 +104,7 @@ public class Ball {
     }
 
     public void updateDown() {
-        //updating paddle position
+        //updating brick position
         y = y + getSpeed();
         if(!left){
             x = x + getSpeed();

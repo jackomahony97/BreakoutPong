@@ -50,7 +50,7 @@ public class Brick {
         setAlive(true);
 
         //Getting bitmap from drawable resource
-        Bitmap originalBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.bricky);
+        Bitmap originalBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.brick);
         bitmap = Bitmap.createScaledBitmap(originalBitmap, width/6, 100, false);
     }
 

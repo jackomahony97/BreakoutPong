@@ -27,7 +27,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + UsersContract.FeedEntry.TABLE_NAME + " (" +
-                    UsersContract.FeedEntry._ID + " INTEGER PRIMARY KEY," +
+                    UsersContract.FeedEntry._ID + "INTEGER PRIMARY KEY," +
                     UsersContract.FeedEntry.COLUMN_NAME_NAME + " TEXT," +
                     UsersContract.FeedEntry.COLUMN_NAME_EMAIL + " TEXT," +
                     UsersContract.FeedEntry.COLUMN_NAME_PASSWORD + " TEXT)";
