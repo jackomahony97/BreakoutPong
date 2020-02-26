@@ -21,7 +21,7 @@ public class Paddle {
      * Speed of the brick
      * TODO increase speed per level
      */
-    private int speed;
+    private int speed = 20;
     /**
      * Screen width
      */
@@ -30,6 +30,14 @@ public class Paddle {
      * Screen height
      */
     private int height;
+    /**
+     * Paddle width
+     */
+    private int paddleWidth;
+    /**
+     * Paddle height
+     */
+    private static int paddleHeight = 100;
 
     /**
      * Constructor to set height, width and speed
@@ -41,14 +49,13 @@ public class Paddle {
         // Get device height
         height= context.getResources().getDisplayMetrics().heightPixels;
         // Set device width - size of brick
-        x = width/2 - 100;
+        x = width/2 - paddleWidth;
         // Set device width - size of brick
-        y = height - 150;
-        setSpeed(20);
+        y = height - paddleHeight;
 
         //Getting bitmap from drawable resource
         Bitmap originalBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.paddle);
-        bitmap = Bitmap.createScaledBitmap(originalBitmap, 200, 100, false);
+        bitmap = Bitmap.createScaledBitmap(originalBitmap, paddleWidth, paddleHeight, false);
     }
 
     /**
@@ -57,17 +64,16 @@ public class Paddle {
      */
     public void update(String s){
         if(s.equals("0\r")) {
-            if(getX() < width - 201) {
+            if(getX() < width - (paddleWidth+1)) {
                 x = x + getSpeed();
             }
-            s = "2";
         }
         if(s.equals("1\r")) {
             if(getX() > 1){
                 x= x - getSpeed();
             }
-            s = "2";
         }
+        s = "2";
     }
 
     public Bitmap getBitmap() {
@@ -88,6 +94,18 @@ public class Paddle {
 
     public void setSpeed(int newSpeed){
         this.speed = newSpeed;
+    }
+
+    public int getPaddleWidth() {
+        return paddleWidth;
+    }
+
+    public void setPaddleWidth(int newPaddleWidth){
+        this.paddleWidth = newPaddleWidth;
+    }
+
+    public static int getPaddleHeight() {
+        return paddleHeight;
     }
 
 }

@@ -41,6 +41,11 @@ public class Ball {
      * Screen height
      */
     private int height;
+    /**
+     * Ball diameter
+     */
+    private int ballDiameter = 50;
+
 
     /**
      * Constructor to set height, width and speed
@@ -65,20 +70,20 @@ public class Ball {
         //Getting bitmap from drawable resource
         Bitmap originalBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ball);
         // Scale tp correct size
-        bitmap = Bitmap.createScaledBitmap(originalBitmap, 50, 50, false);
+        bitmap = Bitmap.createScaledBitmap(originalBitmap, ballDiameter, ballDiameter, false);
     }
 
     /**
      * Method to update coordinate of character
      */
     public void update() {
-        if (getX() < 1 || getX() > width - 50){
+        if (getX() < 1 || getX() > width - ballDiameter){
             left = !left;
         }
 
         if (!up) {
             updateDown();
-            if (getY() > height - 175){
+            if (getY() > height - Paddle.getPaddleHeight()){
                 up = !up;
             }
         }

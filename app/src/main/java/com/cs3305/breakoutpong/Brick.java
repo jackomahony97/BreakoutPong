@@ -32,6 +32,13 @@ public class Brick {
      * Screen height
      */
     private int height;
+    /**
+     * Paddle width
+     */
+    /**
+     * Paddle height
+     */
+    private int brickHeight = 100;
 
     /**
      * Constructor to set height, width and speed
@@ -43,6 +50,8 @@ public class Brick {
         // Get device height
         height= context.getResources().getDisplayMetrics().heightPixels;
 
+        int brickWidth = width/6;
+
 
         // set difficulty
         setLevel(level);
@@ -51,7 +60,7 @@ public class Brick {
 
         //Getting bitmap from drawable resource
         Bitmap originalBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.brick);
-        bitmap = Bitmap.createScaledBitmap(originalBitmap, width/6, 100, false);
+        bitmap = Bitmap.createScaledBitmap(originalBitmap, brickWidth, brickHeight, false);
     }
 
 
