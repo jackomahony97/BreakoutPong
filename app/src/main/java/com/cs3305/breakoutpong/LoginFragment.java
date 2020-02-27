@@ -7,42 +7,104 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.fragment.app.Fragment;
 
-
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link Fragment} subclass representing a login
+ * <p>
+ * Includes code from http://www.androidtutorialshub.com/android-login-and-register-with-sqlite-database-tutorial/
+ * with modifications as per comments on page regarding code reuse
+ *
+ * and https://developer.android.com/guide/components/fragments
+ * and https://developer.android.com/reference/android/widget/Button
+ * and https://developer.android.com/reference/android/content/Intent
+ * and https://developer.android.com/reference/android/widget/EditText
+ * with modifications as per developer.android.com code reuse licence
  */
-public class LoginFragment extends Fragment {
+public class LoginFragment extends Fragment implements View.OnClickListener {
+    /**
+     * View : sets view
+     */
+    private View rootView;
+    /**
+     * EditText : email from xml
+     */
+    private EditText emailEt;
+    /**
+     * EditText : password from xml
+     */
+    private EditText passwordEt;
+    /**
+     * Button : login button
+     */
+    private Button loginButton;
+    /**
+     * DatabaseHelper : instance of the DatabaseHelper class
+     */
+    private DatabaseHelper databaseHelper;
 
+    /**
+     * Constructor to set view and return view and call init methods
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return View : represents the view
+     */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        View rootView = inflater.inflate(R.layout.fragment_login, container,         false);
-
-        Button btn = rootView.findViewById(R.id.btn_login);
-        btn.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), BluetoothActivity.class);
-                startActivity(intent);
-            }
-        });
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        rootView = inflater.inflate(R.layout.fragment_login, container, false);
+        initViews();
+        initListeners();
+        initObjects();
         return rootView;
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();  // Always call the superclass method first
+    /**
+     * This method to initialize views
+     */
+    private void initViews() {
+        emailEt = rootView.findViewById(R.id.et_email);
+        passwordEt = rootView.findViewById(R.id.et_password);
+        loginButton = rootView.findViewById(R.id.btn_login);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();  // Always call the superclass method first
+    /**
+     * This method is to initialize listeners
+     */
+    private void initListeners() {
+        loginButton.setOnClickListener(this);
     }
 
+    /**
+     * This method is to initialize objects to be used
+     */
+    private void initObjects() {
+        databaseHelper = new DatabaseHelper(getActivity());
+    }
+
+    /**
+     * This implemented method is to listen the click on view
+     *
+     * @param v : represents the view
+     */
+    @Override
+    public void onClick(View v) {
+        verifyFromSQLite();
+    }
+
+    /**
+     * This method is to validate the input text fields and verify login credentials from SQLite
+     */
+    private void verifyFromSQLite() {
+        if (!emailEt.getText().toString().trim().equals("") && !passwordEt.getText().toString().trim().equals("")) {
+            if (databaseHelper.checkUser(emailEt.getText().toString().trim(), passwordEt.getText().toString().trim())) {
+                Intent intent = new Intent(getActivity(), BluetoothActivity.class);
+                startActivity(intent);
+            }
+        }
+    }
 
 }

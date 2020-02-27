@@ -3,12 +3,8 @@ package com.cs3305.breakoutpong;
 /**
  * Users is a class representing a users account
  */
-public class Users {
+public class Users{
 
-    /**
-     * int : represents a users id
-     */
-    private int id;
     /**
      * String : represents a users name
      */
@@ -21,22 +17,6 @@ public class Users {
      * String : represents a users password
      */
     private String password;
-
-    /**
-     * Getter method for id
-     * @return int : represents a users id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * Setter method for id
-     * @param id int : represents a users id
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
 
     /**
      * Getter method for name

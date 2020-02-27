@@ -9,7 +9,7 @@ import android.os.Message;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-public class GameView extends SurfaceView implements Runnable {
+public class TwoPlayerGameView extends SurfaceView implements Runnable {
 
     //boolean variable to track if the game is playing or not
     volatile boolean playing;
@@ -18,13 +18,14 @@ public class GameView extends SurfaceView implements Runnable {
     private Thread gameThread = null;
 
     //adding the brick to this class
-    private Paddle paddle;
+    private Paddle paddle1;
+
+    //adding the brick to this class
+    private Paddle paddle2;
 
     //adding the ball to this class
     private Ball ball;
 
-    //adding the bricks to this class
-    private Brick bricks[] = new Brick[30];
 
     //These objects will be used for drawing
     private Paint paint;
@@ -47,17 +48,16 @@ public class GameView extends SurfaceView implements Runnable {
      */
     private int height;
 
+    private boolean isGameOver;
+
+
 
     //Class constructor
-    public GameView(Context context) {
+    public TwoPlayerGameView(Context context) {
         super(context);
 
-        int k = 0;
-        while (k < bricks.length){
-            bricks[k] = new Brick(context, 1);
-            k++;
-        }
 
+        isGameOver = false;
 
         // Get device width
         width= context.getResources().getDisplayMetrics().widthPixels;
@@ -65,7 +65,9 @@ public class GameView extends SurfaceView implements Runnable {
         height= context.getResources().getDisplayMetrics().heightPixels;
 
         //initializing brick object
-        paddle = new Paddle(context);
+        paddle1 = new Paddle(context);
+
+        paddle2 = new Paddle(context);
 
         //initializing ball object
         ball = new Ball(context);
@@ -98,11 +100,14 @@ public class GameView extends SurfaceView implements Runnable {
             //to control
             control();
         }
+
+
     }
 
 
     private void update() {
-        paddle.update(s);
+        paddle1.update(s);
+        paddle2.update(s);
         s="2";
         /**
          *  brick.getX(), brick.getY() - brick.height        brick.get(X) + brick.length, brick.getY() - brick.height
@@ -114,23 +119,27 @@ public class GameView extends SurfaceView implements Runnable {
          *
          */
 
-        for (Brick brick : bricks) {
-            if (ball.getY() < brick.getY() + 100 && brick.getAlive()) {
-                if (ball.getX() >= brick.getX() && ball.getX() <= (brick.getX() + width/6)) {
-                    brick.update();
-                    ball.changeUp();
-                    break;
-                }
-            }
-        }
 
+        if (ball.getY() > paddle1.getY()-25) {
 
-        if (ball.getY() > paddle.getY()-25) {
-
-            if (ball.getX() >= paddle.getX() && ball.getX() <= (paddle.getX() + 200)) {
+            if (ball.getX() >= paddle1.getX() && ball.getX() <= (paddle1.getX() + 200)) {
                 ball.update();
             } else {
                 playing = false;
+                isGameOver = true;
+            }
+        }else {
+            ball.update();
+        }
+
+
+        if (ball.getY() > paddle2.getY()-25) {
+
+            if (ball.getX() >= paddle2.getX() && ball.getX() <= (paddle2.getX() + 200)) {
+                ball.update();
+            } else {
+                playing = false;
+                isGameOver = true;
             }
         }else {
             ball.update();
@@ -148,9 +157,16 @@ public class GameView extends SurfaceView implements Runnable {
             canvas.drawColor(Color.WHITE);
             //Drawing the brick
             canvas.drawBitmap(
-                    paddle.getBitmap(),
-                    paddle.getX(),
-                    paddle.getY(),
+                    paddle1.getBitmap(),
+                    paddle1.getX(),
+                    paddle1.getY(),
+                    paint);
+
+            //Drawing the brick
+            canvas.drawBitmap(
+                    paddle2.getBitmap(),
+                    paddle2.getX(),
+                    0,
                     paint);
 
             //Drawing the ball
@@ -162,20 +178,27 @@ public class GameView extends SurfaceView implements Runnable {
 
             //Drawing the bricks
             int counter = 0;
-            for(int column = 0; column < 250; column=column + 50) {
-                for (int row = 0; row < width; row = row + width/6) {
-                    bricks[counter].setX(row);
-                    bricks[counter].setY(column);
-                    if(bricks[counter].getAlive()) {
-                        canvas.drawBitmap(
-                                bricks[counter].getBitmap(),
-                                bricks[counter].getX(),
-                                bricks[counter].getY(),
-                                paint);
-                    }
-                    counter++;
-                }
+            int tempscore = 0;
+
+
+            int yPos=(int) ((canvas.getHeight() / 2) - ((paint.descent() + paint.ascent()) / 2));
+
+
+            if(isGameOver){
+                paint.setTextSize(150);
+                paint.setTextAlign(Paint.Align.CENTER);
+
+
+                canvas.drawText("Game Over",canvas.getWidth()/2,yPos,paint);
+                canvas.drawText("Score = " + (tempscore),canvas.getWidth()/2,yPos + 200,paint);
+            }else{
+                paint.setTextSize(150);
+                paint.setTextAlign(Paint.Align.CENTER);
+
+                canvas.drawText("Score = " + (tempscore),canvas.getWidth()/2,yPos + 200,paint);
+
             }
+
             //Unlocking the canvas
             surfaceHolder.unlockCanvasAndPost(canvas);
         }
@@ -197,6 +220,7 @@ public class GameView extends SurfaceView implements Runnable {
         try {
             //stopping the thread
             gameThread.join();
+            myBluetooth.join();
         } catch (InterruptedException e) {
         }
     }
@@ -207,5 +231,14 @@ public class GameView extends SurfaceView implements Runnable {
         playing = true;
         gameThread = new Thread(this);
         gameThread.start();
+        myBluetooth = new BluetoothThread(new Handler() {
+
+            @Override
+            public void handleMessage(Message message) {
+                s = (String) message.obj;
+            }
+        });
+
+        myBluetooth.start();
     }
 }

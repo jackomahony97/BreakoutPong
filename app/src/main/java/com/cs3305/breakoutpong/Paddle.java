@@ -33,7 +33,7 @@ public class Paddle {
     /**
      * Paddle width
      */
-    private int paddleWidth;
+    private int paddleWidth = 200;
     /**
      * Paddle height
      */
@@ -51,7 +51,7 @@ public class Paddle {
         // Set device width - size of brick
         x = width/2 - paddleWidth;
         // Set device width - size of brick
-        y = height - paddleHeight;
+        y = height - paddleHeight - 50;
 
         //Getting bitmap from drawable resource
         Bitmap originalBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.paddle);

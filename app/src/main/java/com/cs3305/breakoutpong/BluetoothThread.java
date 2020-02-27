@@ -4,7 +4,6 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -17,30 +16,18 @@ import java.util.UUID;
  * and must be implemented on the other side of the connection as well. If the connection
  * fails, the thread exits.
  *
- * Usage:
- *
- *     BluetoothThread t = BluetoothThread("00:06:66:66:33:89", new Handler() {
- *         @Override
- *         public void handleMessage(Message message) {
- *             String msg = (String) message.obj;
- *             do_something(msg);
- *         }
- *     });
- *
- *     Handler writeHandler = t.getWriteHandler();
- *     t.start();
+ * Includes code from http://www.java2s.com/Open-Source/Android_Free_Code/Hardware/connection/edu_stanford_me202_bluetoothdemoBluetoothThread_java.htm
+ * with modifications as per MIT license stated on website page
  */
 public class BluetoothThread extends Thread {
 
-    BluetoothDevice remoteDevice;
-
-    // Tag for logging
-    private static final String TAG = "BluetoothThread";
+    private BluetoothDevice remoteDevice;
 
     // Delimiter used to separate messages
     private static final char DELIMITER = '\n';
 
     // UUID that specifies a protocol for generic bluetooth serial communication
+    // Common UUID used for HC-05
     private static final UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
     // Bluetooth socket of active connection
@@ -52,7 +39,6 @@ public class BluetoothThread extends Thread {
 
     // Handlers used to pass data between threads
     private final Handler readHandler;
-    private final Handler writeHandler;
 
     // Buffer used to parse messages
     private String rx_buffer = "";
@@ -60,26 +46,10 @@ public class BluetoothThread extends Thread {
     /**
      * Constructor, takes in the MAC address of the remote Bluetooth device
      * and a Handler for received messages.
-     *
      */
     public BluetoothThread(Handler handler) {
-
         this.readHandler = handler;
 
-        writeHandler = new Handler() {
-            @Override
-            public void handleMessage(Message message) {
-                write((String) message.obj);
-            }
-        };
-    }
-
-    /**
-     * Return the write handler for this connection. Messages received by this
-     * handler will be written to the Bluetooth socket.
-     */
-    public Handler getWriteHandler() {
-        return writeHandler;
     }
 
     /**
@@ -87,30 +57,24 @@ public class BluetoothThread extends Thread {
      */
     private void connect() throws Exception {
 
-        Log.i(TAG, "Attempting connection to...");
 
         // Get this device's Bluetooth adapter
         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-        if ((adapter == null) || (!adapter.isEnabled())){
+        if ((adapter == null) || (!adapter.isEnabled())) {
             throw new Exception("Bluetooth adapter not found or not enabled!");
         }
 
         // Find the remote device
 
         Set<BluetoothDevice> pairedDevices = adapter.getBondedDevices();
-        if(pairedDevices.size() > 0)
-        {
-            for(BluetoothDevice device : pairedDevices)
-            {
-                if(device.getName().equals("HC05"))
-                {
+        if (pairedDevices.size() > 0) {
+            for (BluetoothDevice device : pairedDevices) {
+                if (device.getName().equals("HC05")) {
                     remoteDevice = device;
                     break;
                 }
             }
         }
-
-
 
 
         // Create a socket with the remote device using this protocol
@@ -127,24 +91,35 @@ public class BluetoothThread extends Thread {
         outStream = socket.getOutputStream();
         inStream = socket.getInputStream();
 
-        Log.i(TAG, "Connected successfully to");
     }
 
     /**
      * Disconnect the streams and socket.
      */
-    private void disconnect() {
+    public void disconnect() {
 
         if (inStream != null) {
-            try {inStream.close();} catch (Exception e) { e.printStackTrace(); }
+            try {
+                inStream.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         if (outStream != null) {
-            try {outStream.close();} catch (Exception e) { e.printStackTrace(); }
+            try {
+                outStream.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         if (socket != null) {
-            try {socket.close();} catch (Exception e) { e.printStackTrace(); }
+            try {
+                socket.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -169,29 +144,11 @@ public class BluetoothThread extends Thread {
             }
 
         } catch (Exception e) {
-            Log.e(TAG, "Read failed!", e);
         }
 
         return s;
     }
 
-    /**
-     * Write data to the socket.
-     */
-    private void write(String s) {
-
-        try {
-            // Add the delimiter
-            s += DELIMITER;
-
-            // Convert to bytes and write
-            outStream.write(s.getBytes());
-            Log.i(TAG, "[SENT] " + s);
-
-        } catch (Exception e) {
-            Log.e(TAG, "Write failed!", e);
-        }
-    }
 
     /**
      * Pass a message to the read handler.
@@ -201,7 +158,6 @@ public class BluetoothThread extends Thread {
         Message msg = Message.obtain();
         msg.obj = s;
         readHandler.sendMessage(msg);
-        Log.i(TAG, "[RECV] " + s);
     }
 
     /**
@@ -239,7 +195,7 @@ public class BluetoothThread extends Thread {
             connect();
             sendToReadHandler("CONNECTED");
         } catch (Exception e) {
-            Log.e(TAG, "Failed to connect!", e);
+
             sendToReadHandler("CONNECTION FAILED");
             disconnect();
             return;
@@ -250,7 +206,6 @@ public class BluetoothThread extends Thread {
 
             // Make sure things haven't gone wrong
             if ((inStream == null) || (outStream == null)) {
-                Log.e(TAG, "Lost bluetooth connection!");
                 break;
             }
 
@@ -267,4 +222,5 @@ public class BluetoothThread extends Thread {
         disconnect();
         sendToReadHandler("DISCONNECTED");
     }
+
 }
