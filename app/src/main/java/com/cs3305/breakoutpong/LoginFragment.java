@@ -86,21 +86,18 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
     /**
-     * This implemented method is to listen the click on view
+     * This method is to listen the click on view, validate the input text fields
+     * and verify login credentials from SQLite
      *
      * @param v : represents the view
      */
     @Override
     public void onClick(View v) {
-        verifyFromSQLite();
-    }
-
-    /**
-     * This method is to validate the input text fields and verify login credentials from SQLite
-     */
-    private void verifyFromSQLite() {
+        // validate text fields
         if (!emailEt.getText().toString().trim().equals("") && !passwordEt.getText().toString().trim().equals("")) {
+            // if users in database
             if (databaseHelper.checkUser(emailEt.getText().toString().trim(), passwordEt.getText().toString().trim())) {
+                //start next activity
                 Intent intent = new Intent(getActivity(), BluetoothActivity.class);
                 startActivity(intent);
             }

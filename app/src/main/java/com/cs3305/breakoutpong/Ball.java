@@ -51,6 +51,10 @@ public class Ball {
      * int : Ball diameter
      */
     private int ballDiameter = 50;
+    /**
+     * int : Ball diameter
+     */
+    private int top = 1;
 
 
     /**
@@ -97,7 +101,7 @@ public class Ball {
             }
         } else {
             updateUp();
-            if (getY() < 1) {
+            if (getY() < getTop()) {
                 up = !up;
             }
         }
@@ -180,4 +184,23 @@ public class Ball {
     public void changeUp() {
         this.up = !up;
     }
+
+    /**
+     * Getter method for speed
+     *
+     * @return int : represents ball speed
+     */
+    public int getTop() {
+        return top;
+    }
+
+    /**
+     * Setter method for speed
+     *
+     * @param newTop Int : represents ball speed
+     */
+    public void setTop(int newTop) {
+        this.top = newTop;
+    }
+
 }

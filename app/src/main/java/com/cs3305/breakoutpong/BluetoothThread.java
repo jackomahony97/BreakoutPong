@@ -186,7 +186,7 @@ public class BluetoothThread extends Thread {
     }
 
     /**
-     * Entry point when thread.start() is called.
+     * This method is called when thread.start() is called.
      */
     public void run() {
 

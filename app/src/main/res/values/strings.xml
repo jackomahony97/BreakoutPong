@@ -14,7 +14,7 @@
     <string name="register">Register</string>
     <string name="re_type_password">Re-type Password</string>
     <string name="your_name">Full Name</string>
-    <string name="select_arduino">Select Arduino</string>
+    <string name="select_arduino">Select HC-05</string>
     <string name="con">Continue</string>
     <string name="select_mode">Select Game Mode</string>
 

@@ -29,21 +29,43 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
      * Button : represents the register button
      */
     private Button registerButton;
-
+    /**
+     * View : sets view
+     */
     private View rootView;
-
+    /**
+     * DatabaseHelper : instance of the DatabaseHelper class
+     */
     private DatabaseHelper databaseHelper;
-
+    /**
+     * EditText : name from xml
+     */
     private EditText  nameEt;
-
+    /**
+     * EditText : email from xml
+     */
     private EditText  emailEt;
-
+    /**
+     * EditText : password from xml
+     */
     private EditText  passwordEt;
-
+    /**
+     * EditText : repeated password from xml
+     */
     private EditText  repasswordEt;
-
+    /**
+     * Users : instnace of user class to help pass sql data
+     */
     private Users user;
 
+    /**
+     * Constructor to set view and return view and call init methods
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_register, container,false);
@@ -53,6 +75,9 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         return rootView;
     }
 
+    /**
+     * This method to initialize views
+     */
     private void initViews() {
         nameEt  = rootView.findViewById(R.id.et_name);
         emailEt  = rootView.findViewById(R.id.et_email);
@@ -77,18 +102,24 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     }
 
     /**
-     * This implemented method is to listen the click on view
+     * This method is to listen the click on view, validate the input text fields
+     * verify users not in database and add user to database
      *
-     * @param v
+     * @param v : represents the view
      */
     @Override
     public void onClick(View v) {
+        // validate text fields
         if (!nameEt.getText().toString().trim().equals("") && !emailEt.getText().toString().trim().equals("") && !passwordEt.getText().toString().trim().equals("") && !repasswordEt.getText().toString().trim().equals("")) {
+            //check if already in database
             if (!databaseHelper.checkUser(emailEt.getText().toString().trim())) {
+                //set details
                 user.setName(nameEt.getText().toString().trim());
                 user.setEmail(emailEt.getText().toString().trim());
                 user.setPassword(passwordEt.getText().toString().trim());
+                //add to database
                 databaseHelper.addUser(user);
+                //start next activity
                 Intent intent = new Intent(getActivity(), BluetoothActivity.class);
                 startActivity(intent);
             }

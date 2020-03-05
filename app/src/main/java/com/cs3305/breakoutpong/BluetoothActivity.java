@@ -19,13 +19,12 @@ import java.util.Set;
 /**
  * Activity to choose an already paired bluetooth device
  * <p>
- * Inhttps://developer.android.com/reference/android/content/Intentcludes code from https://developer.android.com/guide/topics/connectivity/bluetooth
+ * Includes code from https://developer.android.com/guide/topics/connectivity/bluetooth
  * and https://developer.android.com/guide/topics/ui/controls/spinner
- * and
  * and https://developer.android.com/reference/android/widget/ArrayAdapter
  * and https://developer.android.com/guide/topics/ui/dialogs
  * and https://developer.android.com/reference/android/widget/Button
- * with modifications as per android developer.android.com code reuse licence
+ * with modifications as per developer.android.com code reuse licence
  */
 public class BluetoothActivity extends AppCompatActivity {
     /**

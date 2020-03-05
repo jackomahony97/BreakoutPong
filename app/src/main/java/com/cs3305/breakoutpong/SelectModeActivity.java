@@ -1,7 +1,5 @@
 package com.cs3305.breakoutpong;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -9,11 +7,30 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
-public class SelectModeActivity extends AppCompatActivity {
+import androidx.appcompat.app.AppCompatActivity;
 
+
+/**
+ * Activity to choose single or two-player
+ * <p>
+ * and https://developer.android.com/reference/android/widget/ArrayAdapter
+ * and https://developer.android.com/guide/topics/ui/controls/spinner
+ * and https://developer.android.com/reference/android/widget/Button
+ * with modifications as per developer.android.com code reuse licence
+ */
+public class SelectModeActivity extends AppCompatActivity {
+    /**
+     * Spinner : dropdown menu
+     */
     Spinner dropdown;
+    /**
+     * Button : continue button
+     */
     Button btn;
 
+    /**
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,8 +46,9 @@ public class SelectModeActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
         //set the spinners adapter to the previously created one.
         dropdown.setAdapter(adapter);
-
+        // get from xml
         btn = findViewById(R.id.btn_continue_mode);
+        // set listener
         btn.setOnClickListener(new View.OnClickListener() {
 
             @Override

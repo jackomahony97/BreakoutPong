@@ -23,19 +23,20 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     /**
-     *
+     * onCreate to set fragments list
      *
      * @param savedInstanceState
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //set view
         setContentView(R.layout.activity_main);
-
         ViewPager viewPager = findViewById(R.id.viewPager);
-
         AuthenticationPagerAdapter pagerAdapter = new AuthenticationPagerAdapter(getSupportFragmentManager());
+        //add to list
         pagerAdapter.addFragment(new LoginFragment());
+        //add to list
         pagerAdapter.addFragment(new RegisterFragment());
         viewPager.setAdapter(pagerAdapter);
     }
@@ -61,11 +62,13 @@ public class MainActivity extends AppCompatActivity {
      */
     class AuthenticationPagerAdapter extends FragmentPagerAdapter {
         /**
-         *
+         * ArrayList : list of fragments
          */
         private ArrayList<Fragment> fragmentList = new ArrayList<>();
 
         /**
+         *
+         *
          * @param fm
          */
         public AuthenticationPagerAdapter(FragmentManager fm) {
@@ -73,8 +76,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         /**
-         * @param i
-         * @return
+         * Fragment list getter method
+         *
+         * @param i position in list
+         * @return Fragment
          */
         @Override
         public Fragment getItem(int i) {
@@ -82,6 +87,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         /**
+         * Method to get size of fragment list
+         *
          * @return int size of fragment list
          */
         @Override

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Message;
 import android.view.SurfaceHolder;
@@ -49,6 +50,14 @@ public class TwoPlayerGameView extends SurfaceView implements Runnable {
     private int height;
 
     private boolean isGameOver;
+    /**
+     * MediaPlayer : sound for when ball hits paddle
+     */
+    private MediaPlayer paddleSound;
+    /**
+     * MediaPlayer : sound for when game ends
+     */
+    private MediaPlayer gameoverSound;
 
 
 
@@ -56,6 +65,8 @@ public class TwoPlayerGameView extends SurfaceView implements Runnable {
     public TwoPlayerGameView(Context context) {
         super(context);
 
+        paddleSound = MediaPlayer.create(context, R.raw.paddle_sound);
+        gameoverSound = MediaPlayer.create(context, R.raw.gameover_sound);
 
         isGameOver = false;
 
@@ -68,9 +79,12 @@ public class TwoPlayerGameView extends SurfaceView implements Runnable {
         paddle1 = new Paddle(context);
 
         paddle2 = new Paddle(context);
+        paddle2.setX(600);
+        paddle2.setY(0);
 
         //initializing ball object
         ball = new Ball(context);
+        ball.setTop(100);
 
         //initializing drawing objects
         surfaceHolder = getHolder();
@@ -106,8 +120,8 @@ public class TwoPlayerGameView extends SurfaceView implements Runnable {
 
 
     private void update() {
-        paddle1.update(s);
-        paddle2.update(s);
+        paddle1.update(s, "0\r", "1\r");
+        paddle2.update(s, "0\r", "1\r");
         s="2";
         /**
          *  brick.getX(), brick.getY() - brick.height        brick.get(X) + brick.length, brick.getY() - brick.height
@@ -123,8 +137,10 @@ public class TwoPlayerGameView extends SurfaceView implements Runnable {
         if (ball.getY() > paddle1.getY()-25) {
 
             if (ball.getX() >= paddle1.getX() && ball.getX() <= (paddle1.getX() + 200)) {
+                paddleSound.start();
                 ball.update();
             } else {
+                gameoverSound.start();
                 playing = false;
                 isGameOver = true;
             }
@@ -133,11 +149,13 @@ public class TwoPlayerGameView extends SurfaceView implements Runnable {
         }
 
 
-        if (ball.getY() > paddle2.getY()-25) {
+        if (ball.getY() < paddle2.getPaddleHeight()){
 
             if (ball.getX() >= paddle2.getX() && ball.getX() <= (paddle2.getX() + 200)) {
-                ball.update();
+                paddleSound.start();
+                ball.changeUp();
             } else {
+                gameoverSound.start();
                 playing = false;
                 isGameOver = true;
             }
@@ -166,7 +184,7 @@ public class TwoPlayerGameView extends SurfaceView implements Runnable {
             canvas.drawBitmap(
                     paddle2.getBitmap(),
                     paddle2.getX(),
-                    0,
+                    paddle2.getY(),
                     paint);
 
             //Drawing the ball
@@ -190,13 +208,12 @@ public class TwoPlayerGameView extends SurfaceView implements Runnable {
 
 
                 canvas.drawText("Game Over",canvas.getWidth()/2,yPos,paint);
-                canvas.drawText("Score = " + (tempscore),canvas.getWidth()/2,yPos + 200,paint);
-            }else{
-                paint.setTextSize(150);
-                paint.setTextAlign(Paint.Align.CENTER);
-
-                canvas.drawText("Score = " + (tempscore),canvas.getWidth()/2,yPos + 200,paint);
-
+                paint.setTextSize(50);
+                if (ball.getY() < 500) {
+                    canvas.drawText("Winner = Player 1", canvas.getWidth() / 2, yPos + 200, paint);
+                } else {
+                    canvas.drawText("Winner = Player 2", canvas.getWidth() / 2, yPos + 200, paint);
+                }
             }
 
             //Unlocking the canvas
