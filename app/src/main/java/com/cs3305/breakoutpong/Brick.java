@@ -14,12 +14,12 @@ import android.graphics.BitmapFactory;
  */
 public class Brick {
     /**
-     *  boolean : whether block has been destroyed (by ball) or not
+     *  int : amount of times brick should be rehit
      *
      *  determines if it should be redrawn or not
      *  by default all blocks are drawn
      */
-    private boolean alive;
+    private int alive;
     /**
      *  Bitmap : Resized bitmap derived from original bitmap (to scale)
      */
@@ -36,13 +36,12 @@ public class Brick {
      * int : difficulty level
      * TODO increase speed per level
      */
-    private int level;
 
     /**
      * Constructor to set height, width and speed
      * @param context activity context
      */
-    public Brick(Context context, int level) {
+    public Brick(Context context) {
         //get device width
         int width = context.getResources().getDisplayMetrics().widthPixels;
         //brick width
@@ -50,9 +49,8 @@ public class Brick {
         //brick height
         int brickHeight = 100;
         //set difficulty
-        setLevel(level);
         //all bricks are initially alive
-        setAlive(true);
+        setAlive(1);
         //Getting bitmap from drawable resource
         Bitmap originalBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.brick);
         //scaled bitmap
@@ -63,7 +61,7 @@ public class Brick {
      * Method to update whether brick should be redrawn or not
      */
     public void update(){
-        this.alive = false;
+        this.alive -= 1;
     }
 
     /**
@@ -94,24 +92,6 @@ public class Brick {
     }
 
     /**
-     * Getter method for level
-     *
-     * @return int : represents level
-     */
-    public int getLevel() {
-        return level;
-    }
-
-    /**
-     * Setter method for level
-     *
-     * @param newLevel Int : represents level
-     */
-    public void setLevel(int newLevel){
-        this.level = newLevel;
-    }
-
-    /**
      * Setter method for x coordinate
      *
      * @param newX Int : represents x coordinate
@@ -134,7 +114,7 @@ public class Brick {
      *
      * @param newAlive boolean : represents whether block has been destroyed (by ball) or not
      */
-    public void setAlive(boolean newAlive){
+    public void setAlive(int newAlive){
         this.alive = newAlive;
     }
 
@@ -143,7 +123,7 @@ public class Brick {
      *
      * @return boolean : represents alive
      */
-    public boolean getAlive(){
+    public int getAlive(){
         return alive;
     }
 

@@ -24,5 +24,7 @@ public class UsersContract {
         // email is primary key
         public static final String COLUMN_NAME_EMAIL = "email";
         public static final String COLUMN_NAME_PASSWORD = "password";
+        public static final String COLUMN_NAME_HIGHSCORE = "highscore";
+        public static final String COLUMN_NAME_WINTOTAL = "wintotal";
     }
 }

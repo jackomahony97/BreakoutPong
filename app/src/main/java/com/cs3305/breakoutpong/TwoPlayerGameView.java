@@ -58,12 +58,21 @@ public class TwoPlayerGameView extends SurfaceView implements Runnable {
      * MediaPlayer : sound for when game ends
      */
     private MediaPlayer gameoverSound;
+    /**
+     * DatabaseHelper :
+     */
+    private DatabaseHelper databaseHelper;
 
 
-
-    //Class constructor
+    /**
+     * Constructor to initialize variables and start bluetooth thread and handler
+     *
+     * @param context
+     */
     public TwoPlayerGameView(Context context) {
         super(context);
+
+        databaseHelper = new DatabaseHelper(context);
 
         paddleSound = MediaPlayer.create(context, R.raw.paddle_sound);
         gameoverSound = MediaPlayer.create(context, R.raw.gameover_sound);
@@ -101,9 +110,12 @@ public class TwoPlayerGameView extends SurfaceView implements Runnable {
         myBluetooth.start();
     }
 
-
+    /**
+     * Method that runs when gameThread.start() is called
+     */
     @Override
     public void run() {
+        // game loop
         while (playing) {
             //to update the frame
             update();
@@ -118,10 +130,14 @@ public class TwoPlayerGameView extends SurfaceView implements Runnable {
 
     }
 
-
+    /**
+     * Method to update the frame
+     */
     private void update() {
+        // game button unique identifiers
         paddle1.update(s, "0\r", "1\r");
         paddle2.update(s, "0\r", "1\r");
+        // arbitrary value to avoid false positives
         s="2";
         /**
          *  brick.getX(), brick.getY() - brick.height        brick.get(X) + brick.length, brick.getY() - brick.height
@@ -133,13 +149,17 @@ public class TwoPlayerGameView extends SurfaceView implements Runnable {
          *
          */
 
-
+        //player 1
+        // if the ball passes the paddle vertically
         if (ball.getY() > paddle1.getY()-25) {
-
+            // if the ball is within the paddles horizontal width
             if (ball.getX() >= paddle1.getX() && ball.getX() <= (paddle1.getX() + 200)) {
+                //play sound that indicates ball has hit paddle
                 paddleSound.start();
+                //update ball
                 ball.update();
             } else {
+                //play sound that indicates the game is over
                 gameoverSound.start();
                 playing = false;
                 isGameOver = true;
@@ -148,13 +168,17 @@ public class TwoPlayerGameView extends SurfaceView implements Runnable {
             ball.update();
         }
 
-
+        //player 2
+        // if the ball passes the paddle vertically
         if (ball.getY() < paddle2.getPaddleHeight()){
-
+            // if the ball is within the paddles horizontal width
             if (ball.getX() >= paddle2.getX() && ball.getX() <= (paddle2.getX() + 200)) {
+                //play sound that indicates ball has hit paddle
                 paddleSound.start();
+                //change ball direction as per gravity
                 ball.changeUp();
             } else {
+                //play sound that indicates the game is over
                 gameoverSound.start();
                 playing = false;
                 isGameOver = true;
@@ -166,6 +190,9 @@ public class TwoPlayerGameView extends SurfaceView implements Runnable {
 
     }
 
+    /**
+     * Method to draw the frame
+     */
     private void draw() {
         //checking if surface is valid
         if (surfaceHolder.getSurface().isValid()) {
@@ -195,8 +222,6 @@ public class TwoPlayerGameView extends SurfaceView implements Runnable {
                     paint);
 
             //Drawing the bricks
-            int counter = 0;
-            int tempscore = 0;
 
 
             int yPos=(int) ((canvas.getHeight() / 2) - ((paint.descent() + paint.ascent()) / 2));
@@ -211,6 +236,9 @@ public class TwoPlayerGameView extends SurfaceView implements Runnable {
                 paint.setTextSize(50);
                 if (ball.getY() < 500) {
                     canvas.drawText("Winner = Player 1", canvas.getWidth() / 2, yPos + 200, paint);
+                    if (databaseHelper.addToWinTotal()){
+                        canvas.drawText("Win total incremented" , canvas.getWidth()/2,yPos + 200,paint);
+                    }
                 } else {
                     canvas.drawText("Winner = Player 2", canvas.getWidth() / 2, yPos + 200, paint);
                 }
@@ -222,6 +250,9 @@ public class TwoPlayerGameView extends SurfaceView implements Runnable {
 
     }
 
+    /**
+     * Method to control
+     */
     private void control() {
         try {
             gameThread.sleep(17);
@@ -230,8 +261,10 @@ public class TwoPlayerGameView extends SurfaceView implements Runnable {
         }
     }
 
+    /**
+     * When the game is paused
+     */
     public void pause() {
-        //when the game is paused
         //setting the variable to false
         playing = false;
         try {
@@ -242,8 +275,10 @@ public class TwoPlayerGameView extends SurfaceView implements Runnable {
         }
     }
 
+    /**
+     * When the game is resumed
+     */
     public void resume() {
-        //when the game is resumed
         //starting the thread again
         playing = true;
         gameThread = new Thread(this);

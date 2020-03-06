@@ -1,6 +1,7 @@
 package com.cs3305.breakoutpong;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 
@@ -110,7 +112,11 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         // validate text fields
-        if (!nameEt.getText().toString().trim().equals("") && !emailEt.getText().toString().trim().equals("") && !passwordEt.getText().toString().trim().equals("") && !repasswordEt.getText().toString().trim().equals("")) {
+        boolean validateName = new inputValidate(nameEt).validate();
+        boolean validateEmail = new inputValidate(emailEt).validate();
+        boolean validatePassword = new inputValidate(passwordEt).validate();
+        boolean validateRePassword = new inputValidate(repasswordEt).validate();
+        if (validateName && validateEmail && validatePassword && validateRePassword) {
             //check if already in database
             if (!databaseHelper.checkUser(emailEt.getText().toString().trim())) {
                 //set details
@@ -119,10 +125,36 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                 user.setPassword(passwordEt.getText().toString().trim());
                 //add to database
                 databaseHelper.addUser(user);
+                //global var
+                ((GlobalClass) this.getActivity().getApplication()).setEmail(emailEt.getText().toString().trim());
+
                 //start next activity
                 Intent intent = new Intent(getActivity(), BluetoothActivity.class);
                 startActivity(intent);
             }
+        } else if (!validateName){
+            popup("Name not Valid");
+        } else if (!validateEmail){
+            popup("Email not Valid");
+        } else {
+            popup("Password not Valid");
         }
     }
+
+    public void popup(String message) {
+        //Create a popup with a custom message
+        AlertDialog.Builder builder = new AlertDialog.Builder(rootView.getContext());
+        //Set alert message
+        builder.setMessage(message)
+                .setCancelable(false)
+                //Set a way to dismiss
+                .setNegativeButton("Close", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
 }

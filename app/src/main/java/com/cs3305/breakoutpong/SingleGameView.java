@@ -30,7 +30,7 @@ public class SingleGameView extends SurfaceView implements Runnable {
     /**
      * Brick : array of brick objects
      */
-    private Brick bricks[] = new Brick[30];
+    private Brick[] bricks = new Brick[30];
     /**
      * Paint : to draw on canvas
      */
@@ -68,6 +68,10 @@ public class SingleGameView extends SurfaceView implements Runnable {
      * MediaPlayer : sound for when game is over
      */
     private MediaPlayer gameoverSound;
+    /**
+     * DatabaseHelper :
+     */
+    private DatabaseHelper databaseHelper;
 
 
     /**
@@ -78,10 +82,20 @@ public class SingleGameView extends SurfaceView implements Runnable {
     public SingleGameView(Context context) {
         super(context);
 
+        databaseHelper = new DatabaseHelper(context);
+
         //iterator to run through and initialize bricks
+        //brick health is incremented by 1 every 10 bricks
         int k = 0;
         while (k < bricks.length){
-            bricks[k] = new Brick(context, 1);
+            bricks[k] = new Brick(context);
+            if (k < 10){
+                bricks[k].setAlive(3);
+            } else if (k > 10 && k < 20){
+                bricks[k].setAlive(2);
+            } else{
+                bricks[k].setAlive(1);
+            }
             k++;
         }
 
@@ -112,23 +126,30 @@ public class SingleGameView extends SurfaceView implements Runnable {
     }
 
 
+    /**
+     * Method that runs when gameThread.start() is called
+     */
     @Override
     public void run() {
+        // game loop
         while (playing) {
-            //to update the frame
+            //update frame
             update();
 
-            //to draw the frame
+            //draw the frame
             draw();
 
-            //to control
+            //control
             control();
         }
 
     }
 
-
+    /**
+     * Method to update the frame
+     */
     private void update() {
+        // brick and paddle share same dimension points
         /*
            brick.getX(), brick.getY() - brick.height        brick.get(X) + brick.length, brick.getY() - brick.height
                    --------------------------------------------
@@ -139,27 +160,36 @@ public class SingleGameView extends SurfaceView implements Runnable {
 
          */
 
-
+        // game button unique identifiers
         paddle.update(s, "0\r", "1\r");
+        // arbitrary value to avoid false positives
         s="2";
         for (Brick brick : bricks) {
-            if (ball.getY() < brick.getY() + 100 && brick.getAlive()) {
+            // if the ball passes the brick vertically and the brick hasn't been destroyed yet
+            if (ball.getY() < brick.getY() + 100 && brick.getAlive() > 0) {
+                // if the ball is within the bricks horizontal width
                 if (ball.getX() >= brick.getX() && ball.getX() <= (brick.getX() + width/6)) {
+                    //play sound that indicates brick has been destroyed
                     brickSound.start();
+                    // decrement brick health
                     brick.update();
+                    // change ball direction as per gravity
                     ball.changeUp();
                     break;
                 }
             }
         }
 
-
+        // if the ball passes the paddle vertically
         if (ball.getY() > paddle.getY()-25) {
-
+            // if the ball is within the paddles horizontal width
             if (ball.getX() >= paddle.getX() && ball.getX() <= (paddle.getX() + 200)) {
+                //play sound that indicates ball has hit paddle
                 paddleSound.start();
+                //update ball
                 ball.update();
             } else {
+                //play sound that indicates the game is over
                 gameoverSound.start();
                 playing = false;
                 isGameOver = true;
@@ -171,6 +201,9 @@ public class SingleGameView extends SurfaceView implements Runnable {
 
     }
 
+    /**
+     * Method to draw the frame
+     */
     private void draw() {
         //checking if surface is valid
         if (surfaceHolder.getSurface().isValid()) {
@@ -202,7 +235,7 @@ public class SingleGameView extends SurfaceView implements Runnable {
                 for (int row = 0; row < width; row = row + width/6) {
                     bricks[counter].setX(row);
                     bricks[counter].setY(column);
-                    if(bricks[counter].getAlive()) {
+                    if(bricks[counter].getAlive() > 0) {
                         tempscore++;
                         canvas.drawBitmap(
                                 bricks[counter].getBitmap(),
@@ -212,6 +245,16 @@ public class SingleGameView extends SurfaceView implements Runnable {
                     }
                     counter++;
                 }
+            }
+            //decrement speed to increase difficulty
+            if (bricks.length - tempscore > 10 && bricks.length - tempscore < 21){
+                paddle.setSpeed(15);
+                ball.setSpeed(15);
+            }
+            //decrement speed to increase difficulty
+            if (bricks.length - tempscore > 20 && bricks.length - tempscore > 31){
+                paddle.setSpeed(10);
+                ball.setSpeed(20);
             }
 
             int yPos=(int) ((canvas.getHeight() / 2) - ((paint.descent() + paint.ascent()) / 2));
@@ -226,6 +269,12 @@ public class SingleGameView extends SurfaceView implements Runnable {
                 canvas.drawText("Game Over", canvas.getWidth()/2,yPos,paint);
                 paint.setTextSize(50);
                 canvas.drawText("Score = " + (bricks.length - tempscore), canvas.getWidth()/2,yPos + 200,paint);
+
+                // add high score to database
+                if (databaseHelper.addHighScore(bricks.length - tempscore)){
+                    canvas.drawText("Highscore achieved" , canvas.getWidth()/2,yPos + 400,paint);
+                }
+
             }else{
                 paint.setTextSize(50);
                 paint.setTextAlign(Paint.Align.CENTER);
@@ -240,6 +289,9 @@ public class SingleGameView extends SurfaceView implements Runnable {
 
     }
 
+    /**
+     * Method to control
+     */
     private void control() {
         try {
             gameThread.sleep(17);
@@ -249,20 +301,26 @@ public class SingleGameView extends SurfaceView implements Runnable {
         }
     }
 
+    /**
+     * When the game is paused
+     */
     public void pause() {
-        //when the game is paused
         //setting the variable to false
         playing = false;
         try {
             //stopping the thread
             gameThread.join();
             myBluetooth.join();
+            // exception suggested by IDE
         } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
+    /**
+     * When game is resumed
+     */
     public void resume() {
-        //when the game is resumed
         //starting the thread again
         playing = true;
         gameThread = new Thread(this);

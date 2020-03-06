@@ -57,6 +57,7 @@ public class SingleGameActivity extends AppCompatActivity
                         Intent myIntent = new Intent(SingleGameActivity.this, SelectModeActivity.class);
                         SingleGameActivity.this.startActivity(myIntent);
                         finish();
+                        System.exit(0);
                     }
                 })
                 //Set alert button

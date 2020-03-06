@@ -1,6 +1,7 @@
 package com.cs3305.breakoutpong;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 /**
@@ -94,14 +96,40 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         // validate text fields
-        if (!emailEt.getText().toString().trim().equals("") && !passwordEt.getText().toString().trim().equals("")) {
+        boolean validateEmail = new inputValidate(emailEt).validate();
+        boolean validatePassword = new inputValidate(passwordEt).validate();
+        // if they're valid
+        if (validateEmail && validatePassword) {
             // if users in database
             if (databaseHelper.checkUser(emailEt.getText().toString().trim(), passwordEt.getText().toString().trim())) {
+                // global var
+                ((GlobalClass) this.getActivity().getApplication()).setEmail(emailEt.getText().toString().trim());
+
                 //start next activity
                 Intent intent = new Intent(getActivity(), BluetoothActivity.class);
                 startActivity(intent);
             }
+        } else if (!validateEmail){
+            popup("Email not Valid");
+        } else {
+            popup("Password not Valid");
         }
+    }
+
+    public void popup(String message) {
+        //Create a popup with a custom message
+        AlertDialog.Builder builder = new AlertDialog.Builder(rootView.getContext());
+        //Set alert message
+        builder.setMessage(message)
+                .setCancelable(false)
+                //Set a way to dismiss
+                .setNegativeButton("Close", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
 }
