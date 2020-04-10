@@ -2,8 +2,6 @@
 
 
                                                               CS3305:
-                                                        Team Software Project:
-                                                              Team 11:
                                                            Product Brief
                                                       Jack O Mahony 117498152
 
