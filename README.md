@@ -35,6 +35,7 @@ Fig. 1. Example of single player game
 Fig. 2. Example of multi-player game
 ![Alt text](MultiPlayerExample.png) 
 
+Project Demonstration Video
+https://user-images.githubusercontent.com/37781244/131266603-63ed945b-d46a-46d3-8db0-64aa9c33a574.mp4
 
-Product Demonstration Video
-![Alt text](BreakoutPong_ProductDemonstrationScreencast.mp4) 
+
