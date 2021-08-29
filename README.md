@@ -1,16 +1,16 @@
 # BreakoutPong
 
 
-                                                              CS3305:
-                                                           Product Brief
-                                                      Jack O Mahony 117498152
+        CS3305:
+     Product Brief
+Jack O Mahony 117498152
 
 
 
 
 
-                                                          Arduino based game:
-                                                            Breakout Pong
+    Arduino based game:
+      Breakout Pong
  
 
 
