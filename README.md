@@ -4,10 +4,6 @@
         CS3305:
      Product Brief
 
-
-
-
-
     Arduino based game:
       Breakout Pong
  
